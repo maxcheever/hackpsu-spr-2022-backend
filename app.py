@@ -30,5 +30,20 @@ def home():
 
     return json_response(professors = profs, status=200)
 
+key = '8a340f693d644fa1af78d87de98548c3'
+endpoint = 'https://hackpsu-spr-2022.cognitiveservices.azure.com/'
+
+from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+
+# Authenticate the client using your key and endpoint 
+def authenticate_client():
+    ta_credential = AzureKeyCredential(key)
+    text_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=ta_credential)
+    return text_analytics_client
+
+client = authenticate_client()
+
+
 if(__name__=="__main__"):
     app.run()
