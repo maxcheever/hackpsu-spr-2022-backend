@@ -6,30 +6,6 @@ app = Flask(__name__)
 json = FlaskJSON(app)
 CORS(app)
 
-@app.route("/")
-def home():
-    profs = [
-        {'name':"Antonio Blanca",
-         'rating':"3.3/5",
-         'description':"I felt Np Complete after each of his lectures",
-         'src':"ratemyprof/antonioblanca"
-        },
-
-        {'name':"David Kosclicki",
-         'rating':"2.0/5",
-         'description':"I thought professor koslicki was a nice guy. He actually incredibly incompetent!",
-          'src':"ratemyprof/davidkosclicki"
-        },
-
-        {'name':"Yanling Wang",
-         'rating':'0.5/5',
-         'description':"I felt like I was being tortured. A hundred shivers ran down my spine, as if the devil himself appeared before me.",
-          'src':"ratemyprof/yanlingwang"
-        }
-    ]
-
-    return json_response(professors = profs, status=200)
-
 key = '8a340f693d644fa1af78d87de98548c3'
 endpoint = 'https://hackpsu-spr-2022.cognitiveservices.azure.com/'
 
@@ -58,31 +34,42 @@ def sentiment_analysis_example(client):
         "The homeworks are tough and not related to the lectures. For the second homework, I spent too much time on it and as a result I fell behind on everything else. The office hours are useless too. I don't know how the TAs did well. I literally can't sleep worrying that I will fail",
         "Would not recommend this professor for future students when taking 360 and 465. Although he is a good teacher, the curriculum is very tough. The tests are 74 percent of our grade and the homeworks are very difficult. Took him for 360 as well and received a 1 percent curve with an impossible final. If you slip up in this class you are done."
         ]
-        
-    response = client.analyze_sentiment(documents=documents)
-    j = 1
-    for i in response:
-        print(f'Sentence {j}:')
-        print("Sentiment: {}".format(i.sentiment))
-        print("Overall scores: positive={0:.2f}; neutral={1:.2f}; negative={2:.2f} \n".format(
-            i.confidence_scores.positive,
-            i.confidence_scores.neutral,
-            i.confidence_scores.negative,
-        ))
-        j += 1
+    # response = client.analyze_sentiment(documents=documents)
+    
+    # for i in response:
+    #     print(f'Sentence {j}:')
+    #     print("Sentiment: {}".format(i.sentiment))
+    #     print("Overall scores: positive={0:.2f}; neutral={1:.2f}; negative={2:.2f} \n".format(
+    #         i.confidence_scores.positive,
+    #         i.confidence_scores.neutral,
+    #         i.confidence_scores.negative,
+    #     ))
+    #     j += 1
 
     full = [' '.join(documents)] 
-    
+    sentiment = ''
     fullText = client.analyze_sentiment(documents=full)[0]
     print("Document Sentiment: {}".format(fullText.sentiment))
-    print("Overall scores: positive={0:.2f}; neutral={1:.2f}; negative={2:.2f} \n".format(
+    sentiment += "Overall scores: positive={0:.2f}; neutral={1:.2f}; negative={2:.2f} \n".format(
         fullText.confidence_scores.positive,
         fullText.confidence_scores.neutral,
         fullText.confidence_scores.negative,
-    ))
-          
-sentiment_analysis_example(client)
+    )
+    return sentiment 
+
+@app.route("/")
+def home():
+    sentiment = sentiment_analysis_example(client)
+    profs = [
+        {'name':"David Kosclicki",
+         'rating':sentiment,
+         'description':"He would have gotten a 3/5 but since the average is bad, I have curved his rating to 4/5. Just like he curved the final by 13% (actual number remains a mystery). This is one of those classes where the effort you put in does not seem proportional to your grade. However, if you put in the work you will pass.",
+          'src':"ratemyprof/davidkosclicki"
+        }
+    ]
+
+    return json_response(professors = profs, status=200)
 
 
-# if(__name__=="__main__"):
-#     app.run()
+if(__name__=="__main__"):
+    app.run()
