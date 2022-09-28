@@ -12,7 +12,7 @@ endpoint = 'https://hackpsu-spr-2022.cognitiveservices.azure.com/'
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
 
-# Authenticate the client using key and endpoint 
+# authenticates the client using key and endpoint from microsoft azure API
 def authenticate_client():
     ta_credential = AzureKeyCredential(key)
     text_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=ta_credential)
