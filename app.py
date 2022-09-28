@@ -12,7 +12,7 @@ endpoint = 'https://hackpsu-spr-2022.cognitiveservices.azure.com/'
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
 
-# Authenticate the client using your key and endpoint 
+# Authenticate the client using key and endpoint 
 def authenticate_client():
     ta_credential = AzureKeyCredential(key)
     text_analytics_client = TextAnalyticsClient(endpoint=endpoint, credential=ta_credential)
@@ -20,6 +20,7 @@ def authenticate_client():
 
 client = authenticate_client()
 
+# performs sentiment analysis on the sample text from rateMyProfessor
 def sentiment_analysis_example(client):
 
     documents = [
@@ -34,6 +35,7 @@ def sentiment_analysis_example(client):
         "The homeworks are tough and not related to the lectures. For the second homework, I spent too much time on it and as a result I fell behind on everything else. The office hours are useless too. I don't know how the TAs did well. I literally can't sleep worrying that I will fail",
         "Would not recommend this professor for future students when taking 360 and 465. Although he is a good teacher, the curriculum is very tough. The tests are 74 percent of our grade and the homeworks are very difficult. Took him for 360 as well and received a 1 percent curve with an impossible final. If you slip up in this class you are done."
         ]
+    # testing code 
     # response = client.analyze_sentiment(documents=documents)
     
     # for i in response:
@@ -49,7 +51,8 @@ def sentiment_analysis_example(client):
     full = [' '.join(documents)] 
     sentiment = ''
     fullText = client.analyze_sentiment(documents=full)[0]
-    print("Document Sentiment: {}".format(fullText.sentiment))
+#     print("Document Sentiment: {}".format(fullText.sentiment))
+    # formats analysis for easy access
     sentiment += "Overall scores: positive={0:.2f}; neutral={1:.2f}; negative={2:.2f} \n".format(
         fullText.confidence_scores.positive,
         fullText.confidence_scores.neutral,
@@ -57,6 +60,7 @@ def sentiment_analysis_example(client):
     )
     return sentiment 
 
+# send json response to frontend with professor, analysis, and sample review
 @app.route("/")
 def home():
     sentiment = sentiment_analysis_example(client)
