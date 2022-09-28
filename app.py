@@ -22,7 +22,7 @@ client = authenticate_client()
 
 # performs sentiment analysis on the sample text from rateMyProfessor
 def sentiment_analysis_example(client):
-
+    #sample text, would be webscraped in actuality
     documents = [
         "He would have gotten a 3/5 but since the average is bad, I have curved his rating to 4/5. Just like he curved the final by 13% (actual number remains a mystery). This is one of those classes where the effort you put in does not seem proportional to your grade. However, if you put in the work you will pass.",
         "I agreed with the one star comment below. Although the final curve for this class was 23%, there were still so many people did not pass.",
